@@ -15,8 +15,11 @@ async function main() {
 	// Configure client stub.
 	const transport = createConnectTransport({
 		httpVersion: "1.1",
+		// fra1 is the default Compute region (Frankfurt).
 		baseUrl: "https://fra1.compute.namespaceapis.com",
+		// Use JSON on the wire instead of binary Protobufs.
 		useBinaryFormat: false,
+		// Pass Authorization header with all requests.
 		interceptors: [bearerAuthInterceptor(token)],
 	});
 	const client = createPromiseClient(ComputeService, transport);
@@ -24,6 +27,7 @@ async function main() {
 	// Create instance.
 	const resp = await client.createInstance({
 		shape: { virtualCpu: 2, memoryMegabytes: 4096 },
+		// By default the VM is created with only containerd in it and not K8s.
 		features: [CreateInstanceRequest_Feature.KUBERNETES],
 	});
 	const instanceId = resp.metadata.instanceId;
@@ -33,7 +37,7 @@ async function main() {
 	console.log("   - URL: ", resp.instanceUrl);
 	console.log();
 
-	// Wait for instance.
+	// Wait for the instance to boot up and K8s to initialize.
 	console.log("Waiting for the cluster to initialize...");
 	const waitStream = client.waitInstance({ instanceId });
 	for await (const _ of waitStream);
