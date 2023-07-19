@@ -1,10 +1,13 @@
 {
+  "name": "garden-demo",
+  "main": "src/main.ts",
   "type": "module",
   "scripts": {
-    "start": "ts-node --esm main.ts"
+    "start": "ts-node --esm src/main.ts"
   },
   "dependencies": {
     "@buf/namespace_cloud.bufbuild_connect-es": "^0.11.0-20230705113806-ffd1a4ac0b85.1",
+    "@buf/namespace_cloud.bufbuild_es": "^1.3.0-20230705113806-ffd1a4ac0b85.1",
     "@bufbuild/connect": "^0.11.0",
     "@bufbuild/connect-node": "^0.11.0"
   },
