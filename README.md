@@ -31,7 +31,7 @@ npm config set @buf:registry https://buf.build/gen/npm/v1/
 npm install
 ```
 
-Once the set up is done run the demo:
+Once the setup is done run the demo:
 
 ```
 npm start

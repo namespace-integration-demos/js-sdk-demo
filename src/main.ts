@@ -54,7 +54,7 @@ async function main() {
 	if (false) {
 		await client.destroyInstance({
 			instanceId,
-			reason: "testing script",
+			reason: "testing",
 		});
 		console.log("Kubernetes Cluster destroyed");
 	}
