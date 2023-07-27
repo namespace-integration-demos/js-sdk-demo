@@ -3,7 +3,7 @@
   "main": "src/main.ts",
   "type": "module",
   "scripts": {
-    "start": "ts-node --esm src/main.ts"
+    "start": "node --loader ts-node/esm src/main.ts"
   },
   "dependencies": {
     "@buf/namespace_cloud.bufbuild_connect-es": "^0.11.0-20230705113806-ffd1a4ac0b85.1",
