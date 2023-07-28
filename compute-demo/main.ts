@@ -72,14 +72,25 @@ function bearerAuthInterceptor(token: string): Interceptor {
 }
 
 async function readLocalToken() {
-	const tokenPath = path.join(userConfigDir(), "ns/token.json");
-	const tokenBytes = await fs.readFile(tokenPath, { encoding: "utf8" });
-	const tokenData = JSON.parse(tokenBytes) as { bearer_token: string };
-	return tokenData.bearer_token;
+	const p = exists("./token.json")
+		? "./token.json"
+		: path.join(userConfigDir(), "ns/token.json");
+	console.log(`Reading tenant token from ${p}`);
+	const bs = await fs.readFile(p, { encoding: "utf8" });
+	const data = JSON.parse(bs) as { bearer_token: string };
+	console.log();
+	return data.bearer_token;
 }
 
 function userConfigDir() {
 	if (process.platform === "darwin")
 		return path.join(process.env.HOME + "/Library/Application Support");
 	return path.join(process.env.HOME, ".config");
+}
+
+function exists(path: string) {
+	return fs
+		.stat(path)
+		.then(() => true)
+		.catch(() => false);
 }
