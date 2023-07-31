@@ -28,7 +28,10 @@ async function main() {
 	const resp = await client.createInstance({
 		shape: { virtualCpu: 2, memoryMegabytes: 4096 },
 		// By default the VM is created with only containerd in it and not K8s.
-		features: [CreateInstanceRequest_Feature.KUBERNETES],
+		features: [
+			CreateInstanceRequest_Feature.KUBERNETES,
+			CreateInstanceRequest_Feature.KUBERNETES_INGRESS_MANAGER,
+		],
 	});
 	const instanceId = resp.metadata.instanceId;
 
@@ -72,7 +75,7 @@ function bearerAuthInterceptor(token: string): Interceptor {
 }
 
 async function readLocalToken() {
-	const p = exists("./token.json")
+	const p = (await exists("./token.json"))
 		? "./token.json"
 		: path.join(userConfigDir(), "ns/token.json");
 	console.log(`Reading tenant token from ${p}`);
