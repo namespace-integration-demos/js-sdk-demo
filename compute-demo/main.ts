@@ -1,8 +1,8 @@
 import * as fs from "fs/promises";
 import * as path from "path";
 
-import { createComputeServiceClient } from "@namespacelabs/api/node";
-import { CreateInstanceRequest_Feature } from "@namespacelabs/api";
+import { createComputeServiceClient } from "@namespacelabs/cloud/node";
+import { CreateInstanceRequest_Feature } from "@namespacelabs/cloud";
 
 void main();
 

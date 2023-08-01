@@ -5,7 +5,7 @@ import {
 	GetOpenIdTokenForDeveloperIdentityCommand,
 } from "@aws-sdk/client-cognito-identity";
 
-import { createTenantServiceClient } from "@namespacelabs/api/node";
+import { createTenantServiceClient } from "@namespacelabs/cloud/node";
 
 // Resources owned by Garden AWS account:
 const awsRegion = "eu-central-1";

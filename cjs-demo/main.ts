@@ -1,4 +1,4 @@
-import { createComputeServiceClient } from "@namespacelabs/api/node";
+import { createComputeServiceClient } from "@namespacelabs/cloud/node";
 
 void main();
 
