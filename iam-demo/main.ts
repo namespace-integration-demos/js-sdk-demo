@@ -5,10 +5,7 @@ import {
 	GetOpenIdTokenForDeveloperIdentityCommand,
 } from "@aws-sdk/client-cognito-identity";
 
-import { createPromiseClient, Interceptor } from "@bufbuild/connect";
-import { createConnectTransport } from "@bufbuild/connect-node";
-
-import { TenantService } from "@buf/namespace_cloud.bufbuild_connect-es/namespace/cloud/iam/v1beta/tenants_connect.js";
+import { createTenantServiceClient } from "@namespacelabs/api/node";
 
 // Resources owned by Garden AWS account:
 const awsRegion = "eu-central-1";
@@ -33,16 +30,7 @@ async function main() {
 	console.log();
 
 	// Configure client stub.
-	const transport = createConnectTransport({
-		httpVersion: "1.1",
-		// fra1 is the default Compute region (Frankfurt).
-		baseUrl: "https://iam.namespaceapis.com",
-		// Use JSON on the wire instead of binary Protobufs.
-		useBinaryFormat: false,
-		// Pass Authorization header with all requests.
-		interceptors: [bearerAuthInterceptor(token)],
-	});
-	const client = createPromiseClient(TenantService, transport);
+	const client = createTenantServiceClient({ token });
 
 	// Create instance.
 	// gardenCustomerId is an string opaque to Namespace.
@@ -71,13 +59,6 @@ async function main() {
 		await client.removeTenant({ tenantId });
 		console.log("Tenant deleted.");
 	}
-}
-
-function bearerAuthInterceptor(token: string): Interceptor {
-	return (next) => async (req) => {
-		req.header.append("Authorization", `Bearer ${token}`);
-		return await next(req);
-	};
 }
 
 async function saveTenantToken(path: string, token: string) {

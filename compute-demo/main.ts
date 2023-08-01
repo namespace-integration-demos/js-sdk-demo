@@ -1,11 +1,8 @@
 import * as fs from "fs/promises";
 import * as path from "path";
 
-import { createPromiseClient, Interceptor } from "@bufbuild/connect";
-import { createConnectTransport } from "@bufbuild/connect-node";
-
-import { CreateInstanceRequest_Feature } from "@buf/namespace_cloud.bufbuild_es/namespace/cloud/compute/v1beta/compute_pb.js";
-import { ComputeService } from "@buf/namespace_cloud.bufbuild_connect-es/namespace/cloud/compute/v1beta/compute_connect.js";
+import { createComputeServiceClient } from "@namespacelabs/api/node";
+import { CreateInstanceRequest_Feature } from "@namespacelabs/api";
 
 void main();
 
@@ -13,16 +10,10 @@ async function main() {
 	const token = await readLocalToken();
 
 	// Configure client stub.
-	const transport = createConnectTransport({
-		httpVersion: "1.1",
-		// fra1 is the default Compute region (Frankfurt).
-		baseUrl: "https://fra1.compute.namespaceapis.com",
-		// Use JSON on the wire instead of binary Protobufs.
-		useBinaryFormat: false,
-		// Pass Authorization header with all requests.
-		interceptors: [bearerAuthInterceptor(token)],
-	});
-	const client = createPromiseClient(ComputeService, transport);
+	const client = createComputeServiceClient(
+		"fra1", // fra1 is the default Compute region (Frankfurt).
+		{ token }
+	);
 
 	// Create instance.
 	const resp = await client.createInstance({
@@ -65,13 +56,6 @@ async function main() {
 		});
 		console.log("Kubernetes Cluster destroyed");
 	}
-}
-
-function bearerAuthInterceptor(token: string): Interceptor {
-	return (next) => async (req) => {
-		req.header.append("Authorization", `Bearer ${token}`);
-		return await next(req);
-	};
 }
 
 async function readLocalToken() {
