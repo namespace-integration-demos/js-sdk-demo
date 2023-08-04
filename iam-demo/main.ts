@@ -6,6 +6,7 @@ import {
 } from "@aws-sdk/client-cognito-identity";
 
 import { createTenantServiceClient } from "@namespacelabs/cloud/node";
+import { ResourceLimitsPolicy, resourceLimitsPolicyKey } from "../lib/defs.js";
 
 // Resources owned by Garden AWS account:
 const awsRegion = "eu-central-1";
@@ -35,10 +36,24 @@ async function main() {
 	// Create instance.
 	// gardenCustomerId is an string opaque to Namespace.
 	console.log("Creating a new tenant...");
+	const resourceLimits: ResourceLimitsPolicy = {
+		concurrency: {
+			cpu: 16,
+			memory_mb: 32 * 1024,
+		},
+		unit_minutes: 100,
+		builds: 0,
+	};
 	const gardenCustomerId = Math.floor(Math.random() * 1000).toString();
 	const createResp = await client.createTenant({
 		visibleName: `customer ${gardenCustomerId}`,
 		creatorId: gardenCustomerId,
+		policies: [
+			{
+				policy: resourceLimitsPolicyKey,
+				value: JSON.stringify(resourceLimits),
+			},
+		],
 	});
 	const tenantId = createResp.tenant.id;
 	console.log("   - ID:", tenantId);
