@@ -41,8 +41,10 @@ async function main() {
 			cpu: 16,
 			memory_mb: 32 * 1024,
 		},
-		unit_minutes: 100,
-		builds: 0,
+		monthly: {
+			unit_minutes: 100,
+			builds: 0,
+		},
 	};
 	const gardenCustomerId = Math.floor(Math.random() * 1000).toString();
 	const createResp = await client.createTenant({

@@ -6,9 +6,13 @@ export const resourceLimitsPolicyKey = "nsc.resource-limits";
 // When ResourceLimitsPolicy is set, its fields default to zero.
 // So to allow using a resource, corresponding field needs to be filled.
 export interface ResourceLimitsPolicy {
+	concurrency: MachineLimits;
+	monthly: TotalLimits;
+}
+
+export interface TotalLimits {
 	unit_minutes: number;
 	builds: number;
-	concurrency: MachineLimits;
 }
 
 export interface MachineLimits {
