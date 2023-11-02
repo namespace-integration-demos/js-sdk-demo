@@ -1,16 +1,14 @@
 import * as fs from "fs/promises";
 
-import {
-	CognitoIdentityClient,
-	GetOpenIdTokenForDeveloperIdentityCommand,
-} from "@aws-sdk/client-cognito-identity";
-
+import jwt from "jsonwebtoken";
 import { createTenantServiceClient } from "@namespacelabs/cloud/node";
-import { ResourceLimitsPolicy, resourceLimitsPolicyKey } from "../lib/defs.js";
 
-// Resources owned by Garden AWS account:
-const awsRegion = "eu-central-1";
-const identityPool = "eu-central-1:56388dff-961f-42d4-a2ac-6ad118eb7799";
+const partnerOidcIssuer = "partner.example.com";
+const partnerOidcKey = `-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEfOUooAOH3+SeiQOwztVeG5UMFKbq
+gykQqyT8WClOKwpIUtgBTuk7RbsJMOGzy5N6lhP/YaK6JWRg+GJRuQwCNg==
+-----END PUBLIC KEY-----`;
+
 // Allocated by Namespace team:
 const namespacePartnerId = "user_01h6dvjymxsh7absdzhkfz9v6f";
 
@@ -19,14 +17,13 @@ void main();
 async function main() {
 	// Get a token from partner's identity pool identifying a namespace partner.
 	console.log("Getting an identity token...");
-	const cognitoClient = new CognitoIdentityClient({ region: awsRegion });
-	const cognitoToken = await cognitoClient.send(
-		new GetOpenIdTokenForDeveloperIdentityCommand({
-			IdentityPoolId: identityPool,
-			Logins: { "namespace.so": namespacePartnerId },
-		})
-	);
-	const token = "cognito_" + cognitoToken.Token;
+	const rawToken = jwt.sign({}, partnerOidcKey, {
+		expiresIn: "20m",
+		issuer: partnerOidcIssuer,
+		audience: "namespace.so",
+		subject: namespacePartnerId,
+	});
+	const token = "oidc_" + rawToken;
 	console.log("   - got", token);
 	console.log();
 
@@ -34,28 +31,10 @@ async function main() {
 	const client = createTenantServiceClient({ token });
 
 	// Create instance.
-	// gardenCustomerId is an string opaque to Namespace.
+	// endUserId is an string opaque to Namespace.
 	console.log("Creating a new tenant...");
-	const resourceLimits: ResourceLimitsPolicy = {
-		concurrency: {
-			cpu: 16,
-			memory_mb: 32 * 1024,
-		},
-		monthly: {
-			unit_minutes: 100,
-			builds: 0,
-		},
-	};
-	const gardenCustomerId = Math.floor(Math.random() * 1000).toString();
 	const createResp = await client.createTenant({
-		visibleName: `customer ${gardenCustomerId}`,
-		creatorId: gardenCustomerId,
-		policies: [
-			{
-				policy: resourceLimitsPolicyKey,
-				value: JSON.stringify(resourceLimits),
-			},
-		],
+		visibleName: "example tenant",
 	});
 	const tenantId = createResp.tenant.id;
 	console.log("   - ID:", tenantId);

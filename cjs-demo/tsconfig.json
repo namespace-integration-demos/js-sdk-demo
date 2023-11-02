@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
-      "module": "CommonJS",
-      "moduleResolution": "NodeNext",
-      "skipLibCheck": true
+        "module": "CommonJS",
+        "moduleResolution": "NodeNext",
+        "skipLibCheck": true
     }
 }

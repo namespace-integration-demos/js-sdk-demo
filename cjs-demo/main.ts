@@ -3,7 +3,7 @@ import { createComputeServiceClient } from "@namespacelabs/cloud/node";
 void main();
 
 async function main() {
-	const client = createComputeServiceClient("fra1", { token: "xxx" });
+	const client = createComputeServiceClient("eu", { token: "xxx" });
 	try {
 		await client.createInstance({});
 	} catch {

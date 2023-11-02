@@ -19,30 +19,35 @@ npm install
 
 ## IAM API Demo
 
-The demo shows how to authenticate with Namespace using an AWS Cognito token
+The demo shows how to authenticate with Namespace using an OpenID Connect token
 and programmatically create tenants and obtain tenant tokens.
 
 To run this demo:
 
-1.  Set up AWS Workload Federation with Namespace using a Cognito Identity Pool.
+1.  Set up AWS Workload Federation with Namespace using a OpenID Connect.
 
-    See Authentication section of
-    [the API doc](https://buf.build/namespace/cloud/docs/main:namespace.cloud.iam.v1beta)
-    for deatils.
+    -   See Authentication section of
+        [the API doc](https://buf.build/namespace/cloud/docs/main:namespace.cloud.iam.v1beta)
+        for deatils.
 
-2.  Edit `iam-demo/main.ts` constants to refer to the identity pool and partner ID
-    created on step 1.
+    -   If setting up a OIDC issuer from scratch, use the following to generate a keypair:
 
-3.  Make sure that AWS SDK has approporiate credentials locally. For that either:
+        ```
+        # Generate an EC private key
+        openssl ecparam -genkey -name prime256v1 -noout -out private.pem
 
-    -   If running on a local developer machine: run `aws sso login` to authenticate
-        interactively.
-    -   If running on EC2: make sure to
-        [assign an IAM instance profile](https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/java-dg-roles.html)
-        granting `cognito-identity:GetOpenIdTokenForDeveloperIdentity` permission on
-        the Cognito Identity Pool created on step 1.
+        # Derive the public key (to be shared with Namespace)
+        openssl ec -in private.pem -pubout -out public.pem
 
-4.  Start the demo:
+        # Get key ID (to pass in NAMESPACE_JWT_KEY_ID)
+        openssl pkey -in public.pem -pubin -outform der -out public.der
+        sha1sum public.der
+        ```
+
+2.  Edit `iam-demo/main.ts` constants to refer to the correct OIDC signing key
+    and partner ID.
+
+3.  Start the demo:
 
     ```
     npm run iam-demo
@@ -52,7 +57,7 @@ The output will look like:
 
 ```
 Getting an identity token...
-   - got cognito_<REDACTED>
+   - got oidc_<REDACTED>
 
 Creating a new tenant...
    - ID:   tenant_39jt3aia14qmu

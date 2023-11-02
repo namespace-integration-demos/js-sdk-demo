@@ -11,7 +11,7 @@ async function main() {
 
 	// Configure client stub.
 	const client = createComputeServiceClient(
-		"fra1", // fra1 is the default Compute region (Frankfurt).
+		"eu", // eu is the default Compute region.
 		{ token }
 	);
 
