@@ -4,10 +4,9 @@ import jwt from "jsonwebtoken";
 import { createTenantServiceClient } from "@namespacelabs/cloud/node";
 
 const partnerOidcIssuer = "partner.example.com";
-const partnerOidcKey = `-----BEGIN PUBLIC KEY-----
-MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEfOUooAOH3+SeiQOwztVeG5UMFKbq
-gykQqyT8WClOKwpIUtgBTuk7RbsJMOGzy5N6lhP/YaK6JWRg+GJRuQwCNg==
------END PUBLIC KEY-----`;
+const partnerOidcKey = `-----BEGIN EC PRIVATE KEY-----
+...
+-----END EC PRIVATE KEY-----`;
 
 // Allocated by Namespace team:
 const namespacePartnerId = "user_01h6dvjymxsh7absdzhkfz9v6f";
@@ -18,6 +17,7 @@ async function main() {
 	// Get a token from partner's identity pool identifying a namespace partner.
 	console.log("Getting an identity token...");
 	const rawToken = jwt.sign({}, partnerOidcKey, {
+		algorithm: "ES256",
 		expiresIn: "20m",
 		issuer: partnerOidcIssuer,
 		audience: "namespace.so",
