@@ -66,7 +66,7 @@ Getting a tenant token...
    - got nsct_<REDACTED>
 
 Saved tenant token to token.json
-Run `npm run compute-demo` to use it.
+Run `npm run kubernetes-demo` to use it.
 ```
 
 ## Compute API Demo
@@ -97,7 +97,7 @@ Accessing Compute API requires a tenant token. It can be obtained in two ways:
 Run the demo:
 
 ```
-npm run compute-demo
+npm run kubernetes-demo
 ```
 
 The output will look like this:
