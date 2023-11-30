@@ -1,13 +1,16 @@
 import * as fs from "fs/promises";
-import * as path from "path";
 
-import { createComputeServiceClient } from "@namespacelabs/cloud/node";
+import {
+	createComputeServiceClient,
+	fetchDevelopmentToken,
+} from "@namespacelabs/cloud/node";
 import { CreateInstanceRequest_Feature } from "@namespacelabs/cloud";
+import { Timestamp } from "@bufbuild/protobuf";
 
 void main();
 
 async function main() {
-	const token = await readLocalToken();
+	const token = await fetchDevelopmentToken();
 
 	// Configure client stub.
 	const client = createComputeServiceClient(
@@ -18,6 +21,8 @@ async function main() {
 	// Create instance.
 	const resp = await client.createInstance({
 		shape: { virtualCpu: 2, memoryMegabytes: 4096 },
+		// Run the instance for 30 mins.
+		deadline: Timestamp.fromDate(new Date(Date.now() + 30 * 60 * 1000)),
 		// By default the VM is created with only containerd in it and not K8s.
 		features: [
 			CreateInstanceRequest_Feature.KUBERNETES,
@@ -29,6 +34,7 @@ async function main() {
 	console.log("Kubernetes Cluster created.");
 	console.log("   - ID:  ", instanceId);
 	console.log("   - URL: ", resp.instanceUrl);
+	console.log("   - Deadline: ", resp.metadata.deadline.toDate());
 	console.log();
 
 	// Wait for the instance to boot up and K8s to initialize.
@@ -56,28 +62,4 @@ async function main() {
 		});
 		console.log("Kubernetes Cluster destroyed");
 	}
-}
-
-async function readLocalToken() {
-	const p = (await exists("./token.json"))
-		? "./token.json"
-		: path.join(userConfigDir(), "ns/token.json");
-	console.log(`Reading tenant token from ${p}`);
-	const bs = await fs.readFile(p, { encoding: "utf8" });
-	const data = JSON.parse(bs) as { bearer_token: string };
-	console.log();
-	return data.bearer_token;
-}
-
-function userConfigDir() {
-	if (process.platform === "darwin")
-		return path.join(process.env.HOME + "/Library/Application Support");
-	return path.join(process.env.HOME, ".config");
-}
-
-function exists(path: string) {
-	return fs
-		.stat(path)
-		.then(() => true)
-		.catch(() => false);
 }

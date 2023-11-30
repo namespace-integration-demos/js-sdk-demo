@@ -1,24 +1,25 @@
 {
-  "name": "js-sdk-demo",
-  "type": "module",
-  "scripts": {
-    "compute-demo": "node --loader ts-node/esm compute-demo/main.ts",
-    "iam-demo": "node --loader ts-node/esm iam-demo/main.ts",
-    "cjs-demo": "ts-node cjs-demo/main.ts"
-  },
-  "dependencies": {
-    "@bufbuild/connect": "^0.12.0",
-    "@bufbuild/connect-node": "^0.12.0",
-    "@namespacelabs/cloud": "^0.1.0",
-    "jsonwebtoken": "^9.0.2"
-  },
-  "devDependencies": {
-    "@types/jsonwebtoken": "^9.0.4",
-    "ts-node": "^10.9.1"
-  },
-  "prettier": {
-    "options": {
-      "editorconfig": true
-    }
-  }
+	"name": "js-sdk-demo",
+	"type": "module",
+	"scripts": {
+		"containers-demo": "node --loader ts-node/esm containers-demo/main.ts",
+		"kubernetes-demo": "node --loader ts-node/esm kubernetes-demo/main.ts",
+		"iam-demo": "node --loader ts-node/esm iam-demo/main.ts",
+		"cjs-demo": "ts-node cjs-demo/main.ts"
+	},
+	"dependencies": {
+		"@bufbuild/connect": "^0.12.0",
+		"@bufbuild/connect-node": "^0.12.0",
+		"@namespacelabs/cloud": "^0.1.12",
+		"jsonwebtoken": "^9.0.2"
+	},
+	"devDependencies": {
+		"@types/jsonwebtoken": "^9.0.4",
+		"ts-node": "^10.9.1"
+	},
+	"prettier": {
+		"options": {
+			"editorconfig": true
+		}
+	}
 }
