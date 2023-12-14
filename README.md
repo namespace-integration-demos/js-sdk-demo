@@ -17,6 +17,56 @@ npm config set @buf:registry https://buf.build/gen/npm/v1/
 npm install
 ```
 
+
+## Compute API Demo
+
+The demo shows how to connect to the
+[Compute API](https://buf.build/namespace/cloud/docs/main:namespace.cloud.compute.v1beta)
+and use it to create an ephemeral Kubernetes cluster.
+
+Accessing Compute API requires a tenant token. It can be obtained in two ways:
+
+1. Logging into a normal Namespace account locally:
+
+    ```
+    # Install Namespace CLI tool.
+    curl -fsSL https://get.namespace.so/cloud/install.sh | sh
+
+    # Login with your Namespace account.
+    nsc login
+    ```
+
+    The token will be read from `~/Library/Application Support/ns/token.json`.
+
+2. Using IAM API to programmatically obtain a tenant token.
+
+    Use the IAM Demo above to do that and save the token to `./auth.json`.
+    If this file exists it will be automatically picked up.
+
+Run the demo:
+
+```
+npm run kubernetes-demo
+```
+
+The output will look like this:
+
+```
+Kubernetes Cluster created.
+   - ID:   1k55b4ji6iqgi
+   - URL:  https://cloud.namespace.so/9dcjsuhhjno46/cluster/1k55b4ji6iqgi
+
+Waiting for the cluster to initialize...
+   - cluster initialized.
+
+Getting kubeconfig.yaml...
+   - got:  1k55b4ji6iqgi.yaml
+
+Try:
+   $ kubectl --kubeconfig=1k55b4ji6iqgi.yaml get all
+```
+
+
 ## IAM API Demo
 
 The demo shows how to authenticate with Namespace using an OpenID Connect token
@@ -67,52 +117,4 @@ Getting a tenant token...
 
 Saved tenant token to token.json
 Run `npm run kubernetes-demo` to use it.
-```
-
-## Compute API Demo
-
-The demo shows how to connect to the
-[Compute API](https://buf.build/namespace/cloud/docs/main:namespace.cloud.compute.v1beta)
-and use it to create an ephemeral Kubernetes cluster.
-
-Accessing Compute API requires a tenant token. It can be obtained in two ways:
-
-1. Logging into a normal Namespace account locally:
-
-    ```
-    # Install Namespace CLI tool.
-    curl -fsSL https://get.namespace.so/cloud/install.sh | sh
-
-    # Login with your Namespace account.
-    nsc login
-    ```
-
-    The token will be read from `~/Library/Application Support/ns/token.json`.
-
-2. Using IAM API to programmatically obtain a tenant token.
-
-    Use the IAM Demo above to do that and save the token to `./auth.json`.
-    If this file exists it will be automatically picked up.
-
-Run the demo:
-
-```
-npm run kubernetes-demo
-```
-
-The output will look like this:
-
-```
-Kubernetes Cluster created.
-   - ID:   1k55b4ji6iqgi
-   - URL:  https://cloud.namespace.so/9dcjsuhhjno46/cluster/1k55b4ji6iqgi
-
-Waiting for the cluster to initialize...
-   - cluster initialized.
-
-Getting kubeconfig.yaml...
-   - got:  1k55b4ji6iqgi.yaml
-
-Try:
-   $ kubectl --kubeconfig=1k55b4ji6iqgi.yaml get all
 ```
